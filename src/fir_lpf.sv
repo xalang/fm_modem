@@ -1,28 +1,43 @@
-`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-//
+// By:          Andy Lang
+// Create Date: 03/24/2026   
 // Module Name: fir_lpf
-// Description: FIR 79-tap LPF filter
-//
+// Description: Implements a 79-tap FIR LPF with cutoff 150KHz using tap symmetry to reduce 
+//              multiplies to 39+1 instead of 79. Also decimates by a factor of 2.
+//              TODO: time multiplex one multiplier. samples come in at 2 Mhz
+//                    and go out at 1 MHz. You have 50 cycles to multiply, 50 > 40.
 //////////////////////////////////////////////////////////////////////////////////
+
+`timescale 1ns / 1ps
 
 module fir_lpf (
-    input  logic               clk,       // 50 MHz system clock
+    input  logic               clk,
     input  logic               rst,
 
-    input  logic               in_valid,  // 2 MHz pulse (1 clk wide)
-    input  logic signed [15:0] in,        // Q1.15 input
+    input  logic               in_valid,
+    input  logic signed [15:0] in,
 
-    output logic               out_valid, // 1 MHz pulse
-    output logic signed [15:0] out        // Q1.15 output
+    output logic               out_valid,
+    output logic signed [15:0] out
 );
 
-    // ------------------------------------------------------------
-    // Symmetric FIR coefficients (Q1.15)
-    // only first half + center tap needed
-    // ------------------------------------------------------------
     logic signed [15:0] coeff [0:39];
+    logic signed [15:0] shift_reg [0:78];
+    integer i;
 
+    // Time-multiplexing
+    logic [5:0] tap_idx; // 0..39
+    logic processing;
+
+    logic decim_phase;
+    
+    // for timing
+    logic signed [16:0] sample_sum;
+    logic signed [15:0] coeff_reg;
+    logic signed [32:0] mult_reg;
+    logic signed [39:0] acc_temp;
+
+    // Initialize coefficients (same as before)
     initial begin
         coeff[0]  = 16'sd0;
         coeff[1]  = 16'sd1;
@@ -63,22 +78,17 @@ module fir_lpf (
         coeff[36] = 16'sd3390;
         coeff[37] = 16'sd4601;
         coeff[38] = 16'sd5437;
-        coeff[39] = 16'sd5735; // center tap
+        coeff[39] = 16'sd5735;
     end
-
-    // ------------------------------------------------------------
-    // Delay line
-    // ------------------------------------------------------------
-    logic signed [15:0] shift_reg [0:78];
-
-    integer i;
-    logic decim_phase;
 
     always_ff @(posedge clk) begin
         if (rst) begin
             for (i = 0; i < 79; i++)
                 shift_reg[i] <= 0;
 
+            tap_idx     <= 0;
+            acc_temp    <= 0;
+            processing  <= 0;
             decim_phase <= 0;
             out_valid   <= 0;
             out         <= 0;
@@ -86,31 +96,42 @@ module fir_lpf (
         else begin
             out_valid <= 0;
 
+            // Shift in new sample
             if (in_valid) begin
-                // Shift samples
                 for (i = 78; i > 0; i--)
                     shift_reg[i] <= shift_reg[i-1];
-
                 shift_reg[0] <= in;
 
                 decim_phase <= ~decim_phase;
 
-                // Output every 2nd sample
+                // Start processing every 2nd input (1 MHz output)
                 if (decim_phase) begin
-                    logic signed [39:0] acc_temp;
-                    logic signed [16:0] pair_sum_temp;
+                    tap_idx    <= 0;
+                    acc_temp   <= 0;
+                    processing <= 1;
+                end
+            end
 
-                    acc_temp = 0;
-
-                    for (i = 0; i < 39; i++) begin
-                        pair_sum_temp = shift_reg[i] + shift_reg[78-i];
-                        acc_temp += pair_sum_temp * coeff[i];
-                    end
-
-                    acc_temp += shift_reg[39] * coeff[39];
-
-                    out <= acc_temp[30:15];
+            // Time-multiplexed MAC
+            if (processing) begin
+                if (tap_idx < 39) begin
+                    sample_sum <= shift_reg[tap_idx] + shift_reg[78-tap_idx];
+                    coeff_reg  <= coeff[tap_idx];
+                    mult_reg   <= sample_sum * coeff_reg;
+                    acc_temp   <= acc_temp + mult_reg;
+                    tap_idx    <= tap_idx + 1;
+                end
+                else if (tap_idx == 39) begin
+                    // center tap
+                    mult_reg <= shift_reg[39] * coeff[39];
+                    acc_temp <= acc_temp + mult_reg;
+                    tap_idx  <= tap_idx + 1;
+                end
+                else begin
+                    // all taps done, output result
+                    out       <= acc_temp[30:15];
                     out_valid <= 1;
+                    processing <= 0;
                 end
             end
         end

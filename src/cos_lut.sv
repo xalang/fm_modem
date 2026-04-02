@@ -1,15 +1,27 @@
+//////////////////////////////////////////////////////////////////////////////////
+// By:          Andy Lang
+// Create Date: 03/24/2026   
+// Module Name: cos_lut
+// Description: Lookup table for cos with quarter wave symmetry
+//////////////////////////////////////////////////////////////////////////////////
+
+`timescale 1ns / 1ps
+
 module cos_lut (
     input  logic [11:0] addr,
     output logic signed [15:0] data
 );
-
+    
     logic [9:0] lut_addr;
+   // keep track of quadrant for symmetry calculation
     logic [1:0] quad;
     logic signed [15:0] lut [0:1023];
     
     always_comb begin
+        // top 2 bits determine quadrant
         quad = addr[11:10];
-    
+
+        // values based on quarter wave symmetry
         case (quad)
             2'b00: begin
                 lut_addr = addr[9:0];

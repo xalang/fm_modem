@@ -1,102 +1,57 @@
-`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-//
-// Create Date: 03/20/2026 03:30:32 AM
+// By:          Andy Lang
+// Create Date: 03/24/2026   
 // Module Name: fm_modem
-// Description: 
-//
+// Description: FM modem top
 //////////////////////////////////////////////////////////////////////////////////
 
-module fm_modem(
-    input logic clk,
-    input logic rst,
-    input logic [15:0] fm_in
+`timescale 1ns / 1ps
+
+module fm_modem (
+    input  logic clk,       // 50 MHz clock
+    input  logic rst,       // reset button / switch
+    input  logic signed [15:0] audio_sample,
+    input  logic audio_sample_valid,
+    output logic aud_pwm,    // PWM audio output
+    output logic aud_sd
 );
+    assign aud_sd = 1;
 
-    // LO
-    logic [15:0] LO_cos, LO_sin;
+    logic [21:0] sample_addr;
+    logic signed [15:0] sample, interp_audio_sample;
+    logic sample_valid,interp_audio_sample_valid;
 
-    // Mixer
-    logic [15:0] I_mixer_out, Q_mixer_out;
+    logic signed [15:0] fm_sample;
+    // =========================================================
+    // interpolate input audio samples to ~1MHz
+    // =========================================================
 
-    // CIC decimator
-    logic [15:0] I_cic_out, Q_cic_out;
-    logic I_cic_out_valid, Q_cic_out_valid;
-
-    // FIR LPF
-    logic [15:0] I_fir_lpf_out, Q_fir_lpf_out;
-    logic I_fir_lpf_out_valid, Q_fir_lpf_out_valid;
-
-    // Quadrature phase detector
-    logic [31:0] sin_out, cos_out;
-    logic quad_pd_out_valid;
-
-    // Instantiations
-    nco nco_inst (
+    fir_interpolator fir_interpolator_inst (
         .clk(clk),
         .rst(rst),
-        .cos_out(LO_cos),
-        .sin_out(LO_sin)
+        .in(audio_sample),
+        .in_valid(audio_sample_valid),
+        .out(interp_audio_sample),
+        .out_valid(interp_audio_sample_valid)
+    );
+    
+    // =========================================================
+    // FM Modem
+    // =========================================================
+
+    fm_mod fm_mod_inst (
+       .clk(clk),
+       .rst(rst),
+       .audio_in_valid(interp_audio_sample_valid),
+       .audio_in(interp_audio_sample),
+       .fm_out(fm_sample)
     );
 
-    mixer I_fm_to_BB_mixer (
-        .in1(fm_in),
-        .in2(LO_cos),
-        .out(I_mixer_out)
-    );
-
-    mixer Q_fm_to_BB_mixer (
-        .in1(fm_in),
-        .in2(LO_sin),
-        .out(Q_mixer_out)
-    );
-
-    cic_decim I_cic_decim_inst (
+    fm_demod fm_demod_inst (
         .clk(clk),
         .rst(rst),
-        .in(I_mixer_out),
-        .out_valid(I_cic_out_valid),
-        .out(I_cic_out)
-    );
-
-    cic_decim Q_cic_decim_inst (
-        .clk(clk),
-        .rst(rst),
-        .in(Q_mixer_out),
-        .out_valid(Q_cic_out_valid),
-        .out(Q_cic_out)
-    );
-
-    fir_lpf I_fir_lpf_inst (
-        .clk(clk),
-        .rst(rst),
-        .in_valid(I_cic_out_valid),
-        .in(I_cic_out),
-        .out_valid(I_fir_lpf_out_valid),
-        .out(I_fir_lpf_out)
-    );
-
-    fir_lpf Q_fir_lpf_inst (
-        .clk(clk),
-        .rst(rst),
-        .in_valid(Q_cic_out_valid),
-        .in(Q_cic_out),
-        .out_valid(Q_fir_lpf_out_valid),
-        .out(Q_fir_lpf_out)
-    );
-
-    wire signed [15:0] Q_fir_lpf_out_neg;
-    assign Q_fir_lpf_out_neg = -Q_fir_lpf_out;
-
-    quadrature_phase_detector quadrature_phase_detector_inst (
-        .clk(clk),
-        .rst(rst),
-        .in_valid(I_fir_lpf_out_valid),
-        .I_in(I_fir_lpf_out),
-        .Q_in(Q_fir_lpf_out_neg),
-        .sin_out(sin_out),
-        .cos_out(cos_out),
-        .out_valid(quad_pd_out_valid)
+        .fm_in(fm_sample),
+        .aud_pwm(aud_pwm)
     );
 
 endmodule
