@@ -18,10 +18,12 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
 <img width="1267" height="363" alt="image" src="https://github.com/user-attachments/assets/85baa8d9-fe6b-4c77-8e02-8de76c667d7e" />
 
 - Reference 10.7 MHz cos and sin are generated using NCO and used to mix FM signal down to baseband + generate I & Q arms for phase discrimination.
-  
-- *CIC Decimator*
+- **CIC Decimator**
   - Cascaded Integrator-Comb filter
-  - Hardware
+  - Hardware efficient anti-aliasing + decimating filter only using adders and subtractors.
+  - Brings sample rate down from 50 MHz to 2 MHz (25x) to relax resource requirement of downstream filters.
+  - Combines frequency response of cascaded integrator and comb stages, which together approximate a sinc-shaped low-pass response
+  - 3 stages to improve rejection and sharpen roll-off of sinc
 
 #### Baseband Demodulation Chain ####
 <img width="1280" height="542" alt="image" src="https://github.com/user-attachments/assets/794b1d40-f724-4725-8020-01a6f0afb623" />
