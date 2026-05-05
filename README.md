@@ -11,5 +11,5 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
 
 
 - 48 KHz 16-bit signed audio samples
-- 105-tap 21-phase polyphase FIR interpolator for upsampling. Upsamples 48 KHz audio to ~1 MHz for smoother FM modulation transitions.
+- 105-tap 21-phase polyphase FIR interpolator for upsampling. Upsamples 48 KHz audio to ~1 MHz for smoother FM modulation steps.
 - Digital FM modulator with carrier frequency 10.7MHz, max frequency deviation 75 KHz.  
