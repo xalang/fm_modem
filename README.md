@@ -24,6 +24,10 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
   - Brings sample rate down from 50 MHz to 2 MHz (25x) to relax resource requirement of downstream filters.
   - Combines frequency response of cascaded integrator and comb stages, which together approximate a sinc-shaped low-pass response
   - 3 stages to improve rejection and sharpen roll-off of sinc
+- **FIR LPF**
+  - 79-tap FIR LPF with cutoff frequency 150KHz to reject double frequency term.
+  - Employs tap symmetry and time-multplexing of multipliers to reduce computations and DSP usage
+  - Also decimates by a factor of 2 (output 1 MHz sample rate)
 
 #### Baseband Demodulation Chain ####
 <img width="1280" height="542" alt="image" src="https://github.com/user-attachments/assets/794b1d40-f724-4725-8020-01a6f0afb623" />
