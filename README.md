@@ -8,3 +8,6 @@ Q1.15 data format was chosen to balance hardware cost and precision.
 
 #### Input Chain ####
 <img width="720" height="174" alt="image" src="https://github.com/user-attachments/assets/c8ca1df4-35f5-450c-a823-1d05f5ffaf60" />
+
+###### audio.bin ######
+- 48KHz 16-bit signed audio samples
