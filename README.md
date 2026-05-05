@@ -21,7 +21,7 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
 - **CIC Decimator**
   - Cascaded Integrator-Comb filter
   - Hardware efficient anti-aliasing + decimating filter only using adders and subtractors.
-  - Brings sample rate down from 50 MHz to 2 MHz (25x) to relax resource requirement of downstream filters.
+  - Brings sample rate down from 50 MHz to 2 MHz (25x) to relax computational requirement of downstream filters.
   - Combines frequency response of cascaded integrator and comb stages, which together approximate a sinc-shaped low-pass response
   - 3 stages to improve rejection and sharpen roll-off of sinc
 - **FIR LPF**
