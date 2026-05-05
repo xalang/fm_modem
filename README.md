@@ -19,9 +19,9 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
 
 - Reference 10.7 MHz cos and sin are generated using NCO and used to mix FM signal down to baseband + generate I & Q arms for phase discrimination.
   
-##### CIC Decimator #####
-Cascaded Integrator-Comb filter
-- Hardware
+- *CIC Decimator*
+  - Cascaded Integrator-Comb filter
+  - Hardware
 
 #### Baseband Demodulation Chain ####
 <img width="1280" height="542" alt="image" src="https://github.com/user-attachments/assets/794b1d40-f724-4725-8020-01a6f0afb623" />
