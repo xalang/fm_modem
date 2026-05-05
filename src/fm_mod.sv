@@ -3,14 +3,15 @@
 // Create Date: 03/24/2026   
 // Module Name: fm_mod
 // Description: Implements an FM modulator 
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1ns / 1ps
 
 module fm_mod (
     input  logic        clk,
-    input  logic        rst,        // active high reset
-    input  logic        audio_in_valid,   // input sample valid
+    input  logic        rst,
+    input  logic        audio_in_valid,
     input  logic signed [15:0] audio_in, // Q1.15 input (~1 MHz)
     output logic signed [15:0] fm_out // Q1.15 output
 );
@@ -23,8 +24,7 @@ module fm_mod (
     localparam int PHASE_WIDTH = 32;           // phase accumulator width
 
     // Precompute base phase increment for carrier: freq_inc_base = FC * 2^PHASE_WIDTH / FS
-    localparam logic [PHASE_WIDTH-1:0] FREQ_INC_BASE =
-    (FC * 64'd4294967296) / FS;
+    localparam logic [PHASE_WIDTH-1:0] FREQ_INC_BASE = (FC * 64'd4294967296) / FS;
 
     // Phase accumulator and frequency increment
     logic [PHASE_WIDTH-1:0] phase_acc;

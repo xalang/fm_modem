@@ -4,6 +4,7 @@
 // Module Name: cordic_vector
 // Description: Implements vectoring mode cordic algorithm for arctan calculcation
 //              using shift-add logic. Algorithm iterates 16 times.
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1ns / 1ps
@@ -69,9 +70,6 @@ module cordic_vector (
                 if (y >= 0) begin
 
                     //rotate CW
-                    // X_i+1 = X_i + Y_i * 2^-i
-                    // Y_i+1 = Y_i - X_i * 2^-i
-
                     x <= x + (y >>> (iter-1));
                     y <= y - (x >>> (iter-1));
                     z <= z + atan_table[iter-1];
@@ -79,9 +77,6 @@ module cordic_vector (
                 else begin
 
                     //rotate CCW
-                    // X_i+1 = X_i - Y_i * 2^-i
-                    // Y_i+1 = Y_i + X_i * 2^-i
-
                     x <= x - (y >>> (iter-1));
                     y <= y + (x >>> (iter-1));
                     z <= z - atan_table[iter-1];

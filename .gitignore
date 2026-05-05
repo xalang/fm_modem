@@ -4,3 +4,6 @@
 *.sim/
 *.xpr
 *.swp
+.Xil/
+*.runs/
+*.gen/

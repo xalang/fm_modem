@@ -2,8 +2,10 @@
 // By:          Andy Lang
 // Create Date: 03/24/2026   
 // Module Name: audio_lpf
-// Description: Implements 63-tap symmetrical 150 KHz audio LPF and decimation by 
-//              factor of 20 to get output sampling rate 50 KHz.
+// Description: Implements 63-tap symmetrical audio LPF with stopband 150KHz and 
+//              decimation by factor of 40 to get output rate 25 KHz. Time multiplex
+//              LPF to reduce DSP usage
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1ns / 1ps
@@ -63,11 +65,11 @@ module audio_lpf (
     logic [5:0] tap_idx;           // 0..31
     logic signed [39:0] acc_temp;  // accumulator
     logic processing;              // MAC in progress
-    logic [4:0] dec_cnt;           // decimation counter
+    logic [5:0] dec_cnt;           // decimation counter
 
     logic signed [16:0] pair_sum_temp;
 
-    // for timing
+    // Registers for timing
     logic signed [16:0] pair_sum_temp_reg;
     logic signed [15:0] coeff_reg;
     logic signed [32:0] mult_reg;
@@ -99,8 +101,8 @@ module audio_lpf (
                     shift_reg[i] <= shift_reg[i-1];
                 shift_reg[0] <= in;
 
-                // Start decimation process
-                if (dec_cnt == 19 && !processing) begin
+                // Start LPF process every 40 input samples
+                if (dec_cnt == 39 && !processing) begin
                     dec_cnt    <= 0;
                     tap_idx    <= 0;
                     acc_temp   <= 0;
@@ -111,9 +113,9 @@ module audio_lpf (
                     dec_cnt <= dec_cnt + 1;
                 end
             end
-            // MAC pipeline
+            // LPF pipeline
             if (processing) begin
-                // Stage 1: sum & register
+                // Stage 1: sum symmetric terms & register
                 if (tap_idx < 31) begin
                     pair_sum_temp_reg <= shift_reg[tap_idx] + shift_reg[63 - tap_idx];
                     coeff_reg         <= coeff[tap_idx];

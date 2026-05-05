@@ -3,6 +3,7 @@
 // Create Date: 03/24/2026   
 // Module Name: cos_lut
 // Description: Lookup table for cos with quarter wave symmetry
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1ns / 1ps
@@ -13,15 +14,16 @@ module cos_lut (
 );
     
     logic [9:0] lut_addr;
+
    // keep track of quadrant for symmetry calculation
     logic [1:0] quad;
     logic signed [15:0] lut [0:1023];
     
     always_comb begin
-        // top 2 bits determine quadrant
+        // Top 2 bits determine quadrant
         quad = addr[11:10];
 
-        // values based on quarter wave symmetry
+        // Values based on quarter wave symmetry
         case (quad)
             2'b00: begin
                 lut_addr = addr[9:0];
@@ -47,7 +49,7 @@ module cos_lut (
     end
     
     initial begin
-        // preload 1024 cosine quarter-wave samples here
+        // Preload 1024 cosine quarter-wave samples here
         lut[0] = 16'sh7FFF;
         lut[1] = 16'sh7FFF;
         lut[2] = 16'sh7FFF;
@@ -1073,7 +1075,5 @@ module cos_lut (
         lut[1022] = 16'sh0032;
         lut[1023] = 16'sh0000;
     end
-
-
 
 endmodule

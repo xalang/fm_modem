@@ -1,3 +1,11 @@
+//////////////////////////////////////////////////////////////////////////////////
+// By:          Andy Lang
+// Create Date: 03/24/2026   
+// Module Name: mixer
+// Description: Multiply two Q1.15 values and output Q1.15.
+//              
+//////////////////////////////////////////////////////////////////////////////////
+
 module mixer (
     input  logic signed [15:0] in1,   // Q1.15 input 1
     input  logic signed [15:0] in2,   // Q1.15 input 2

@@ -12,6 +12,7 @@ module fm_modem (
     input  logic rst,       // reset button / switch
     input  logic signed [15:0] audio_sample,
     input  logic audio_sample_valid,
+    output logic s_axis_tready,
     output logic aud_pwm,    // PWM audio output
     output logic aud_sd
 );
@@ -31,6 +32,7 @@ module fm_modem (
         .rst(rst),
         .in(audio_sample),
         .in_valid(audio_sample_valid),
+        .s_axis_tready(s_axis_tready),
         .out(interp_audio_sample),
         .out_valid(interp_audio_sample_valid)
     );
@@ -38,7 +40,6 @@ module fm_modem (
     // =========================================================
     // FM Modem
     // =========================================================
-
     fm_mod fm_mod_inst (
        .clk(clk),
        .rst(rst),
@@ -53,5 +54,6 @@ module fm_modem (
         .fm_in(fm_sample),
         .aud_pwm(aud_pwm)
     );
+
 
 endmodule

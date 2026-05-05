@@ -23,9 +23,10 @@ module nco (
     logic [11:0] cos_addr;
     logic [11:0] sin_addr;
     
-    //for timing
+    // Registers for timing
     logic signed [15:0] cos_out_reg,sin_out_reg;
 
+    // Increment phases
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             phase_acc <= 32'd0;
@@ -38,8 +39,9 @@ module nco (
         end
     end
     
+    // Top 12 bits for address (rest for resolution
     assign cos_addr = phase_acc[31:20];
-    assign sin_addr = phase_acc[31:20] + 12'd1024;
+    assign sin_addr = phase_acc[31:20] + 12'd1024; // 90 deg out of phase
     
     cos_lut cos_lut (
         .addr(cos_addr),

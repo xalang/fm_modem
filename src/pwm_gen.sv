@@ -2,16 +2,16 @@
 // By:          Andy Lang
 // Create Date: 03/24/2026   
 // Module Name: pwm_gen
-// Description: Converts q1.15 audio samples to PWM audio @ 97 KHz (%0 MHz/ 2^9 counter). 
-//              Audio is encode in the widths of the pulse: > 50% duty = +ve voltage, <50% = -ve.
-//              The 97KHz represents how fast the period of the pwm cycles are, but 
-//              audio is the moving average of those pwm samples.
+// Description: Converts q1.15 audio samples to PWM audio @ 97 KHz (50 MHz/ 2^9 counter). 
+//              Audio is encoded in the widths of the pulse: > 50% duty = +ve voltage, <50% = -ve.
+//              The 97KHz is modulation frequency; audio is encoded in the moving average 
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1ns / 1ps
 
 
-module audio_pwm (
+module pwm_gen (
     input  logic clk,
     input  logic rst,
 
@@ -35,11 +35,11 @@ module audio_pwm (
     end
 
     // Reduce Q1.15 -> 9-bit signed
-    // take 9 bits -> -256 to 256 range
+    // Take 9 bits -> -256 to 256 range
     assign sample_short = sample_reg[15:7];
 
     // Convert signed -> unsigned for PWM
-    // add 256 to make range 0->512
+    // Add 256 to make range 0->512
     assign pwm_level = sample_short + 9'd256;
 
     // 9-bit PWM counter

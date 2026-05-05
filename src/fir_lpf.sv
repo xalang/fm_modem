@@ -3,9 +3,10 @@
 // Create Date: 03/24/2026   
 // Module Name: fir_lpf
 // Description: Implements a 79-tap FIR LPF with cutoff 150KHz using tap symmetry to reduce 
-//              multiplies to 39+1 instead of 79. Also decimates by a factor of 2.
-//              TODO: time multiplex one multiplier. samples come in at 2 Mhz
-//                    and go out at 1 MHz. You have 50 cycles to multiply, 50 > 40.
+//              multiplies to 39+1 instead of 79. Also decimates by a factor of 2. Also use
+//              time multiplexing to save on DSPs. Samples come in at 2 Mhz and go out at 1 MHz,
+//              so there are 50 cycles to multiply. Only 40 are needed.
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1ns / 1ps
@@ -31,13 +32,13 @@ module fir_lpf (
 
     logic decim_phase;
     
-    // for timing
+    // Registers for timing
     logic signed [16:0] sample_sum;
     logic signed [15:0] coeff_reg;
     logic signed [32:0] mult_reg;
     logic signed [39:0] acc_temp;
 
-    // Initialize coefficients (same as before)
+    // Initialize coefficients
     initial begin
         coeff[0]  = 16'sd0;
         coeff[1]  = 16'sd1;
@@ -114,6 +115,7 @@ module fir_lpf (
 
             // Time-multiplexed MAC
             if (processing) begin
+                // Pipeline to sum symmetric terms, get coefficient, multiply, accumulate.
                 if (tap_idx < 39) begin
                     sample_sum <= shift_reg[tap_idx] + shift_reg[78-tap_idx];
                     coeff_reg  <= coeff[tap_idx];
@@ -122,13 +124,13 @@ module fir_lpf (
                     tap_idx    <= tap_idx + 1;
                 end
                 else if (tap_idx == 39) begin
-                    // center tap
+                    // Center tap
                     mult_reg <= shift_reg[39] * coeff[39];
                     acc_temp <= acc_temp + mult_reg;
                     tap_idx  <= tap_idx + 1;
                 end
                 else begin
-                    // all taps done, output result
+                    // All taps done, output result
                     out       <= acc_temp[30:15];
                     out_valid <= 1;
                     processing <= 0;

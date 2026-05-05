@@ -95,6 +95,7 @@ module fm_demod (
         .out(Q_fir_lpf_out)
     );
 
+    // Multiply Q arm by -1 to correct phase polarity
     wire signed [15:0] Q_fir_lpf_out_neg;
     assign Q_fir_lpf_out_neg = -Q_fir_lpf_out;
 
@@ -128,7 +129,7 @@ module fm_demod (
         .out_valid(audio_cordic_out_valid)
     );
 
-    audio_pwm audio_pwm_inst (
+    pwm_gen pwm_gen_inst (
         .clk(clk),
         .rst(rst),
         .in(audio_lpf_out),
