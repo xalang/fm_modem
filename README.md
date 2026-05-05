@@ -7,7 +7,9 @@ The demodulator chain is inspired by "A Digital Demodulator for Frequency Modula
 Q1.15 data format was chosen to balance hardware cost and precision.
 
 #### Input Chain ####
-<img width="720" height="174" alt="image" src="https://github.com/user-attachments/assets/c8ca1df4-35f5-450c-a823-1d05f5ffaf60" />
+<img width="673" height="144" alt="image" src="https://github.com/user-attachments/assets/9f245155-7b63-4fd3-9183-9e9df1e0ff51" />
 
 ##### audio.bin #####
-- 48KHz 16-bit signed audio samples
+- 48 KHz 16-bit signed audio samples
+##### audio.bin #####
+- 105-tap 21-phase polyphase FIR interpolator for upsampling. Upsamples 48 KHz audio to ~1 MHz for smoother FM modulation transitions.
