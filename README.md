@@ -12,7 +12,7 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
 
 - 48 KHz 16-bit signed audio samples in input binary file.
 - 105-tap 21-phase polyphase FIR interpolator for upsampling. Upsamples 48 KHz audio to ~1 MHz for smoother FM modulation steps instead of zero-stuffing.
-- Digital FM modulator with carrier frequency 10.7MHz, max frequency deviation 75 KHz.  
+- Digital FM modulator with carrier frequency 10.7MHz, max frequency deviation 75 KHz, implementing using dynamic phase increment + NCO.  
 
 ## FM Demodulator ##
 <img width="1267" height="363" alt="image" src="https://github.com/user-attachments/assets/85baa8d9-fe6b-4c77-8e02-8de76c667d7e" />
@@ -28,6 +28,19 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
   - 79-tap FIR LPF with cutoff frequency 150KHz to reject double frequency term.
   - Employs tap symmetry and time-multplexing of multipliers to reduce computations and DSP usage
   - Also decimates by a factor of 2 (output 1 MHz sample rate)
+  - I and Q outputs correspond to cos and sin components centered at DC.
 
-### Baseband Demodulation Chain ###
+### Baseband Demodulation ###
 <img width="1280" height="542" alt="image" src="https://github.com/user-attachments/assets/794b1d40-f724-4725-8020-01a6f0afb623" />
+- Computes sin{phi(n) - phi(n-1)} and cos{phi(n) - phi(n-1)} using delay elements, multipliers, and adders, based on angle subtraction identities.
+- Outputs preserved as Q2.30 for precision.
+- Output feeds into CORDIC module.
+-  **CORDIC**
+  - Implements the CORDIC algorithm in vectoring mode for hardware efficient (shift add operatons only) calculation of arctan.
+  - Input vector (x,y) correspond to (cos,sin) output from previous demodulation stage.
+  - Algorithm is based on the relation:
+  - <img width="129" height="34" alt="image" src="https://github.com/user-attachments/assets/1ba85842-073c-4a29-a5b3-2809619a9c4d" />
+    - Precomputed angle_i and 2^-i pairs are stored in a LUT and used to iterate input vector toward the x-axis.
+    - Rotation angle (output) is accumulated 
+
+  
