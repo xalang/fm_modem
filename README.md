@@ -32,6 +32,7 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
 
 ### Baseband Demodulation ###
 <img width="1280" height="542" alt="image" src="https://github.com/user-attachments/assets/794b1d40-f724-4725-8020-01a6f0afb623" />
+
 - Computes sin{phi(n) - phi(n-1)} and cos{phi(n) - phi(n-1)} using delay elements, multipliers, and adders, based on angle subtraction identities.
 - Outputs preserved as Q2.30 for precision.
 - Output feeds into CORDIC module.
