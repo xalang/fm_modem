@@ -36,12 +36,13 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
 - Computes sin{phi(n) - phi(n-1)} and cos{phi(n) - phi(n-1)} using delay elements, multipliers, and adders, based on angle subtraction identities.
 - Outputs preserved as Q2.30 for precision.
 - Output feeds into CORDIC module.
--  **CORDIC**
+- **CORDIC**
   - Implements the CORDIC algorithm in vectoring mode for hardware efficient (shift add operatons only) calculation of arctan.
   - Input vector (x,y) correspond to (cos,sin) output from previous demodulation stage.
   - Algorithm is based on the relation:
   - <img width="129" height="34" alt="image" src="https://github.com/user-attachments/assets/1ba85842-073c-4a29-a5b3-2809619a9c4d" />
     - Precomputed angle_i and 2^-i pairs are stored in a LUT and used to iterate input vector toward the x-axis.
-    - Rotation angle (output) is accumulated 
+    - Rotation angle (output) is accumulated.
+
 
   
