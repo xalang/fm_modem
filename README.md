@@ -46,7 +46,9 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
 
 ### Output ###
 - Recovered signal is passed through final 63-tap symmetrical audio FIR LPF with decimation factor 40 to get output rate of 25 KHz.
-- Samples are fed into PWM module which geneates PWM output to FPGA.
+- Samples are fed into PWM module which geneates PWM for FPGA audio output.
+
+## Integration with Zynq-7000 PS ##
 
 
   
