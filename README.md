@@ -44,7 +44,7 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
   - Precomputed angle_i and 2^-i pairs are stored in a LUT and used to iteratively rotate input vector toward the x-axis.
   - Rotation angle (output) is accumulated over 16 iterations and scaled to Q1.15.
 
-## Output ##
+### Output ###
 - Recovered signal is passed through final 63-tap symmetrical audio FIR LPF with decimation factor 40 to get output rate of 25 KHz.
 - Samples are fed into PWM module which geneates PWM output to FPGA.
 
