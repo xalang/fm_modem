@@ -38,11 +38,15 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
 - Output feeds into CORDIC module.
 - **CORDIC**
   - Implements the CORDIC algorithm in vectoring mode for hardware efficient (shift add operatons only) calculation of arctan.
-  - Input vector (x,y) correspond to (cos,sin) output from previous demodulation stage.
+  - Input vector (x,y) corresponds to (cos,sin) output from previous demod stage.
   - Algorithm is based on the relation:
   - <img width="129" height="34" alt="image" src="https://github.com/user-attachments/assets/1ba85842-073c-4a29-a5b3-2809619a9c4d" />
   - Precomputed angle_i and 2^-i pairs are stored in a LUT and used to iteratively rotate input vector toward the x-axis.
   - Rotation angle (output) is accumulated over 16 iterations and scaled to Q1.15.
+
+## Output ##
+- Recovered signal is passed through final 63-tap symmetrical audio FIR LPF with decimation factor 40 to get output rate of 25 KHz.
+- Samples are fed into PWM module which geneates PWM output to FPGA.
 
 
   
