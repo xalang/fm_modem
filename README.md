@@ -41,8 +41,8 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
   - Input vector (x,y) correspond to (cos,sin) output from previous demodulation stage.
   - Algorithm is based on the relation:
   - <img width="129" height="34" alt="image" src="https://github.com/user-attachments/assets/1ba85842-073c-4a29-a5b3-2809619a9c4d" />
-    - Precomputed angle_i and 2^-i pairs are stored in a LUT and used to iterate input vector toward the x-axis.
-    - Rotation angle (output) is accumulated.
+  - Precomputed angle_i and 2^-i pairs are stored in a LUT and used to iterate input vector toward the x-axis.
+  - Rotation angle (output) is accumulated.
 
 
   
