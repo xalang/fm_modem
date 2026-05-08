@@ -49,7 +49,12 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
 - Samples are fed into PWM module which geneates PWM for FPGA audio output.
 
 ## Integration with Zynq-7000 PS ##
-<img width="1556" height="581" alt="image" src="https://github.com/user-attachments/assets/ab8d461c-2c3d-48d9-942d-147156a11be4" />
+<img width="1557" height="449" alt="image" src="https://github.com/user-attachments/assets/a0ec07ec-eca7-4bdf-88cf-36edc25d7591" />
+
+- Binary file with raw 48 KHz audio samples stored in SD card.
+- PS reads samples into DDR.
+- DMA to send samples from buffer in DDR to PL through AXI-stream.
+
 
 
   
