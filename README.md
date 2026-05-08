@@ -49,6 +49,7 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
 - Samples are fed into PWM module which geneates PWM for FPGA audio output.
 
 ## Integration with Zynq-7000 PS ##
+<img width="1556" height="581" alt="image" src="https://github.com/user-attachments/assets/ab8d461c-2c3d-48d9-942d-147156a11be4" />
 
 
   
