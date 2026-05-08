@@ -53,7 +53,7 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
 
 - Binary file with raw 48 KHz audio samples stored in SD card.
 - PS reads samples into DDR.
-- DMA to send samples from buffer in DDR to PL through AXI-stream.
+- DMA to send samples from buffer in DDR to PL through AXI-stream with FIFO to handle buffering.
 
 
 
