@@ -1,6 +1,6 @@
 # Digital FM Modem Pipeline #
 
-The project implements a hardware-efficient digital modem for Frequency Modulation (FM) targeting the Digilent Arty-Z7 FPGA. 
+The project implements a hardware-efficient digital modem for Frequency Modulation (FM) targeting the Digilent Arty-Z7 FPGA. https://github.com/xalang/fm_modem/blob/master/README.md
 
 The demodulator chain is inspired by "A Digital Demodulator for Frequency Modulated Signals" (Yu, 2005), which employs an IQ mixed-demodulator architecture for phase recovery, and CORDIC vectoring mode algorithm for fast and efficient computation of arctangent. 
 
@@ -53,8 +53,8 @@ Q1.15 data format was chosen to balance hardware cost and precision. 50 MHz syst
 
 - Binary file with raw 48 KHz audio samples stored in SD card.
 - PS reads samples into DDR.
-- DMA to send samples from buffer in DDR to PL through AXI-stream.
-- FIFO to handle buffering.
+- DMA to send samples from buffer in DDR to PL through AXI stream.
+- AXI stream FIFO to handle buffering.
 
 
 
